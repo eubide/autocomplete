@@ -94,4 +94,7 @@ if __name__ == "__main__":
     for thing in things:
         add_item(redis_client, thing)
 
+    # dame mas ejemplos para probar
+    test_fuzzy_suggestions(redis_client, 'he')
+    test_fuzzy_suggestions(redis_client, 'hel')
     test_fuzzy_suggestions(redis_client, 'helo')
