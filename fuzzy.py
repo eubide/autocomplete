@@ -1,7 +1,8 @@
-from typing import List
-import redis
-import logging
 import hashlib
+import logging
+from typing import List
+
+import redis
 from Levenshtein import distance as levenshtein_distance
 
 SORTED_SET_NAME = 'autocomplete'
