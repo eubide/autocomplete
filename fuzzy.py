@@ -7,7 +7,7 @@ from Levenshtein import distance as levenshtein_distance
 SORTED_SET_NAME = 'autocomplete'
 HASH_NAME = 'items'
 
-logging.basicConfig(level=logging.DEBUG,
+logging.basicConfig(level=logging.ERROR,
                     format="{asctime} - {levelname} - {message}",
                     style="{",
                     datefmt="%Y-%m-%d %H:%M",)
