@@ -1,5 +1,6 @@
 import redis
 import logging
+import hashlib
 
 # Initialize Redis client
 redis_client = redis.Redis(host='localhost', port=6379, db=0)
@@ -37,14 +38,30 @@ def add_item(redis_client, item):
     """
     Add a word to the fuzzy autocomplete system.
     """
+    # Generate a unique key for the item
+    key = hashlib.sha256(item.lower().encode()).hexdigest()
 
-    # split item into words
-    word = item.split()
-    logging.info(f'Adding {word} to the fuzzy autocomplete system')
+    # Normalize the item by converting to lowercase and removing non-alphanumeric characters
+    normalized_item = ''.join(e for e in item.lower()
+                              if e.isalnum() or e.isspace())
+    logging.info(f'Normalized item: {normalized_item}')
 
+    # Split the normalized item into words and remove stop words
+    stop_words = {'a', 'an', 'the', 'is', 'of', 'in',
+                  'on', 'to', 'and', '&', 'for', 'from', 'with'}
+    words = [word for word in normalized_item.split() if word not in stop_words]
+
+    logging.info(f'Adding item: {item} [{key}] :: {words}')
+
+    # Add prefixes of the item to the sorted set for autocomplete
     for i in range(1, len(item) + 1):
         prefix = item[:i]
         redis_client.zadd(SORTED_SET_NAME, {prefix: 0})
+
+    # Store the original item in the hash
+    redis_client.hset(HASH_NAME, key, item)
+
+    # Old version
     redis_client.hset(HASH_NAME, item, item)
 
 
@@ -69,8 +86,7 @@ def get_fuzzy_suggestions(redis_client, input_word, count=5):
 
 def test_fuzzy_suggestions(word):
     # Get fuzzy autocomplete suggestions
-    suggestions = get_fuzzy_suggestions(
-        redis_client, word)  # Intentional typo
+    suggestions = get_fuzzy_suggestions(redis_client, word)
     print(f'{word}: {suggestions}')
 
 
