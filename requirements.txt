@@ -1,2 +1,4 @@
 Levenshtein
 redis
+pytest
+behave
