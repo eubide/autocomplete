@@ -3,7 +3,19 @@
 ## Run Docker ##
 
 ```
-docker run -d -p 6379:6379 redis
+docker run -d --rm --name redis-local -p 6379:6379 redis
+```
+
+if you want show the log you can use this command
+
+```
+docker logs -f redis-local
+```
+
+A different option is up docker and dont put it in background getting the log
+
+```
+docker run --rm --name redis-local -p 6379:6379 redis
 ```
 
 ## References ##
